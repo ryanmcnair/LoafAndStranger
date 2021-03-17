@@ -51,12 +51,27 @@ namespace LoafAndStranger.DataAccess
 
         }
 
-        public void Add(Loaf loaf)
+        public void AddLoaf(Loaf loaf)
         {
-            var biggestExistingId = _loaves.Max(l => l.Id);
-            loaf.Id = biggestExistingId + 1;
-            _loaves.Add(loaf);
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = @"INSERT INTO [dbo].[Loaves]([Size],[Type],[WeightInOunces],[Price],[Sliced])
+                                    OUTPUT inserted.Id
+                                    VALUES(@Size,@Type,@WeightInOunces,@Price,@Sliced,)";
+            command.Parameters.AddWithValue("Size", loaf.Size);
+            command.Parameters.AddWithValue("Type", loaf.Type);
+            command.Parameters.AddWithValue("WeightInOunces", loaf.WeightInOunces);
+            command.Parameters.AddWithValue("Price", loaf.Price);
+            command.Parameters.AddWithValue("Sliced", loaf.Sliced);
+            var id = (int)command.ExecuteScalar();
+            loaf.Id = id;
+            //var biggestExistingId = _loaves.Max(l => l.Id); -- This functionality is handled by SQL now
+            //loaf.Id = biggestExistingId + 1;
+            //_loaves.Add(loaf);
         }
+
+
 
         public Loaf Get(int id)
         {
@@ -91,8 +106,20 @@ namespace LoafAndStranger.DataAccess
 
         public void Remove(int id)
         {
-            var loafToRemove = Get(id);
-            _loaves.Remove(loafToRemove);
+            using var connection = new SqlConnection(ConnectionString);
+            connection.Open();
+
+            var cmd = connection.CreateCommand();
+            cmd.CommandText = @"Delete 
+                                From Loaves 
+                                Where id = @id";
+
+            cmd.Parameters.AddWithValue("id", id);
+
+            cmd.ExecuteNonQuery();
+
+            //var loafToRemove = Get(id);
+            //_loaves.Remove(loafToRemove);
         }
 
         Loaf MapLoaf(SqlDataReader reader)
