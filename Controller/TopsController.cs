@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LoafAndStranger.DataAccess;
+using LoafAndStranger.Models;
 
 namespace LoafAndStranger.Controller
 {
@@ -17,6 +18,14 @@ namespace LoafAndStranger.Controller
         public TopsController()
         {
             _repo = new TopsRepository();
+        }
+
+        [HttpPost]
+        public IActionResult AddTop(AddTopCommand command)
+        {
+            var newTop = _repo.Add(command.NumberOfSeats);
+            return Created($"/api/tops/{newTop.id}", newTop);
+
         }
 
         [HttpGet]

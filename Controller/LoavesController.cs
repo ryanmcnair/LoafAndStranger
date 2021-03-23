@@ -55,13 +55,17 @@ namespace LoafAndStranger.Controller
         [HttpPut("{id}/slice")]
         public IActionResult SliceLoaf(int id)
         {
+            //option 1:
+            //task based api with crud repo
             var loaf = _repo.Get(id);
-            if (loaf.Sliced)
-            {
-                return NoContent();
-            }
             loaf.Sliced = true;
+            _repo.Update(loaf);
+
+            //option 2:
+            //task based api with task based repo
+            _repo.Slice(id);
             return NoContent();
+
         }
 
         //DELETE /api/loaves/{loafId}

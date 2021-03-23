@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LoafAndStranger.Models;
+using LoafAndStranger.DataAccess;
 
 namespace LoafAndStranger
 {
@@ -22,10 +24,16 @@ namespace LoafAndStranger
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the Inversion of Control (IoC) container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            //services.AddTransient<IConfiguration>();
+            //services.AddScoped<IConfiguration>();
+            //services.AddSingleton<IConfiguration>();
+
+            services.AddSingleton(Configuration);
+            services.AddTransient<StrangersRepository>()
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
