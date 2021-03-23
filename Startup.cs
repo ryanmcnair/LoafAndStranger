@@ -33,7 +33,7 @@ namespace LoafAndStranger
             //services.AddSingleton<IConfiguration>();
 
             services.AddSingleton(Configuration);
-            services.AddTransient<StrangersRepository>()
+            services.AddTransient<StrangersRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
